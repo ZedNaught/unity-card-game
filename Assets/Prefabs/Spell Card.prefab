@@ -175,6 +175,7 @@ MonoBehaviour:
   cardName: 
   cardText: 
   manaCost: 4
+  damage: 0
 --- !u!114 &114000010335795588
 MonoBehaviour:
   m_ObjectHideFlags: 1
