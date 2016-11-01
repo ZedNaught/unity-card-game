@@ -15,6 +15,5 @@ public class SpellCard : Card {
 
     private void Start() {
         cardText = string.Format("Deal {0} damage to enemy Hero.", damage);
-        UpdateCardText();
     }
 }
