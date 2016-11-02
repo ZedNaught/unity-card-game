@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Card
   - Minion
+  - BoardDropZone
   layers:
   - Default
   - TransparentFX
@@ -17,7 +18,7 @@ TagManager:
   - 
   - Pieces
   - Board
-  - Drag Zones
+  - Drop Zones
   - 
   - 
   - 

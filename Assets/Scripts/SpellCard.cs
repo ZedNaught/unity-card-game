@@ -3,14 +3,19 @@ using System.Collections;
 
 public class SpellCard : Card {
     public int damage;
-    public Hero target;  // TODO // remove
+//    public Hero target;  // TODO // remove
 
-    public void Play(ITargetable target) {
+    public virtual void Play(IDamageable target) {
         target.Damage(damage);
     }
 
-    public void Play() {
+    public virtual void Play() {
+        IDamageable target = opponent.hero;
         target.Damage(damage);
+    }
+
+    public virtual bool RequiresTarget() {
+        return false;
     }
 
     private void Start() {

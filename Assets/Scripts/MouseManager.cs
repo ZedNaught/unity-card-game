@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class MouseManager : MonoBehaviour {
-    public GameObject board;
+//    public GameObject board;
     public static MouseManager Instance;
 
     private float lerpSpeed = 0.3f;
@@ -27,6 +27,8 @@ public class MouseManager : MonoBehaviour {
     }
 
     private void HandleInput() {
+        bool mouseOverDropZone = MouseOverDropZone();
+
         if (!draggedCard) {
             GameObject piece = GetPieceUnderMouse();
             if (piece) {
@@ -48,8 +50,21 @@ public class MouseManager : MonoBehaviour {
             }
         }
 
-        else if (Input.GetMouseButtonUp(0) && draggedCard) {
-            StopDrag();
+        else {
+            if (Input.GetMouseButtonUp(0)) {
+                if (mouseOverDropZone) {
+                    PlayDraggedCard();
+                }
+                else {
+                    StopDrag();
+                }
+            }
+            if (mouseOverDropZone) {
+                Board.Instance.dropZoneMeshRenderer.material.color = Color.white;
+            }
+            else {
+                Board.Instance.dropZoneMeshRenderer.material.color = Board.Instance.boardMeshRenderer.material.color;
+            }
         }
     }
 
@@ -59,6 +74,21 @@ public class MouseManager : MonoBehaviour {
             if (possiblePointOnBoard.HasValue) {
                 Vector3 pointOnBoard = (Vector3)possiblePointOnBoard;
                 draggedCard.transform.position = Vector3.Lerp(draggedCard.transform.position, pointOnBoard, lerpSpeed);
+            }
+        }
+    }
+
+    private void PlayDraggedCard() {
+        if (draggedCard is SpellCard) {
+            SpellCard spellCard = draggedCard as SpellCard;
+            if (!spellCard.RequiresTarget()) {    
+                spellCard.Play();
+                Destroy(draggedCard.gameObject);
+                draggedCard = null;
+                draggedCardHandIndex = -1;
+            }
+            else {
+                Debug.Log("need to implement playing spell card with target");  // TODO //
             }
         }
     }
@@ -81,19 +111,6 @@ public class MouseManager : MonoBehaviour {
         draggedCardHandIndex = -1; 
     }
 
-    private GameObject GetPieceUnderMouseOld() {
-        Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hitInfo;
-        if (Physics.Raycast(mouseRay, out hitInfo)) {
-            GameObject hitObject = hitInfo.collider.gameObject;
-            if (hitObject.layer == LayerMask.NameToLayer("Pieces")) {
-                return hitObject;
-            }
-        }
-
-        return null;
-    }
-
     private GameObject GetPieceUnderMouse() {
         Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit[] hits;
@@ -111,12 +128,17 @@ public class MouseManager : MonoBehaviour {
     }
 
     public Vector3? GetBoardPointUnderMouse() {
-        Collider boardCollider = board.GetComponentInChildren<Collider>();
         Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitInfo;
-        if (boardCollider.Raycast(mouseRay, out hitInfo, 1000f)) {
+        if (Board.Instance.boardCollider.Raycast(mouseRay, out hitInfo, 1000f)) {
             return hitInfo.point;
         }
         return null;
+    }
+
+    public bool MouseOverDropZone() {
+        Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hitInfo;
+        return Board.Instance.dropZoneCollider.Raycast(mouseRay, out hitInfo, 1000f);
     }
 }

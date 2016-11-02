@@ -20,6 +20,7 @@ public class CardHand : MonoBehaviour {
 
     public void AddCard(Card card, int index) {
         cards.Insert(index, card);
+        card.hand = this;
     }
 
     public Card PopCard(Card card, out int index) {
@@ -29,6 +30,7 @@ public class CardHand : MonoBehaviour {
                 cards.RemoveAt(i);
                 card.canvas.sortingOrder = cards.Count;
                 HighlightCard(null);
+                card.hand = null;
                 return card;
             }
         }
@@ -70,6 +72,8 @@ public class CardHand : MonoBehaviour {
         for (int i = 0; i < handSize; i++) {
             Card card = ((GameObject)Instantiate(cardPrefab, transform)).GetComponent<Card>();
             card.manaCost = i;
+            card.cardName = "Card " + i;
+            ((SpellCard) card).damage = i + 1;
             AddCard(card);
         }
 //        UpdateCardPositions();

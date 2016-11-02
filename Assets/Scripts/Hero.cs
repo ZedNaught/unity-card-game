@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class Hero : MonoBehaviour, ITargetable {
+public class Hero : MonoBehaviour, IDamageable {
     public int maxHealth, health, maxMana, mana;
 
     public Text healthText;

@@ -7,11 +7,14 @@ public abstract class Card : MonoBehaviour {
     public Text manaText, descriptionText, nameText;
     public CardHand hand;
     public Canvas canvas;
+    public Player owner, opponent;
 
     public static float highlightScaleFactor = 1.8f;
 
     private void Awake() {
         canvas = GetComponentInChildren<Canvas>();
+        owner = GameManager.Instance.player1;
+        opponent = GameManager.Instance.player2;
     }
 
     private void Update() {

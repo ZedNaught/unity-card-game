@@ -8,7 +8,7 @@ public class SpellCardEditor : Editor {
         DrawDefaultInspector();
         SpellCard card = (SpellCard)target;
         if (GUILayout.Button("Play Card")) {
-            card.Play();
+            card.Play(null);
         }
     }
 }
