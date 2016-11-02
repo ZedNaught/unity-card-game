@@ -2,14 +2,121 @@
 using System.Collections;
 
 public class MouseManager : MonoBehaviour {
+    public GameObject board;
+    public static MouseManager Instance;
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    private float lerpSpeed = 0.3f;
+    private int piecesLayer;
+    private Card draggedCard;
+    private int draggedCardHandIndex;
+
+    private void Awake() {
+        if (Instance == null) {
+            Instance = this;
+        }
+        else if (Instance != this) {
+            Destroy(gameObject);
+            return;
+        }
+        piecesLayer = LayerMask.NameToLayer("Pieces");
+    }
+
+    private void Update() {
+        HandleInput();
+        DragCard();
+    }
+
+    private void HandleInput() {
+        if (!draggedCard) {
+            GameObject piece = GetPieceUnderMouse();
+            if (piece) {
+                Card card = piece.GetComponent<Card>();
+                if (card) {
+                    if (Input.GetMouseButtonDown(0)) {
+                        StartDrag(card);
+                    }
+                    else {
+                        CardHand.Instance.HighlightCard(card);
+                    }
+                }
+                else {
+                    CardHand.Instance.HighlightCard(null);
+                }
+            }
+            else {
+                CardHand.Instance.HighlightCard(null);
+            }
+        }
+
+        else if (Input.GetMouseButtonUp(0) && draggedCard) {
+            StopDrag();
+        }
+    }
+
+    private void DragCard() {
+        if (draggedCard) {
+            Vector3? possiblePointOnBoard = GetBoardPointUnderMouse();
+            if (possiblePointOnBoard.HasValue) {
+                Vector3 pointOnBoard = (Vector3)possiblePointOnBoard;
+                draggedCard.transform.position = Vector3.Lerp(draggedCard.transform.position, pointOnBoard, lerpSpeed);
+            }
+        }
+    }
+
+    private void StartDrag(Card card) {
+        int cardHandIndex;
+        card.hand.PopCard(card, out cardHandIndex);
+        draggedCard = card;
+        draggedCardHandIndex = cardHandIndex;
+        card.transform.localScale = Card.highlightScaleFactor * Vector3.one;
+        card.transform.rotation = Quaternion.identity;
+    }
+
+    private void StopDrag() {
+        if (draggedCard) {
+            CardHand.Instance.AddCard(draggedCard, draggedCardHandIndex);
+        }
+
+        draggedCard = null;
+        draggedCardHandIndex = -1; 
+    }
+
+    private GameObject GetPieceUnderMouseOld() {
+        Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hitInfo;
+        if (Physics.Raycast(mouseRay, out hitInfo)) {
+            GameObject hitObject = hitInfo.collider.gameObject;
+            if (hitObject.layer == LayerMask.NameToLayer("Pieces")) {
+                return hitObject;
+            }
+        }
+
+        return null;
+    }
+
+    private GameObject GetPieceUnderMouse() {
+        Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit[] hits;
+        hits = Physics.RaycastAll(mouseRay, 1000f, 1 << piecesLayer);
+        if (hits.Length > 0) {
+            GameObject pieceUnderMouse = hits[0].collider.gameObject;
+            foreach (RaycastHit hit in hits) {
+                if (hit.collider.GetComponentInChildren<Canvas>().sortingOrder > pieceUnderMouse.GetComponentInChildren<Canvas>().sortingOrder) {
+                    pieceUnderMouse = hit.collider.gameObject;
+                }
+            }
+            return pieceUnderMouse;
+        }
+        return null;
+    }
+
+    public Vector3? GetBoardPointUnderMouse() {
+        Collider boardCollider = board.GetComponentInChildren<Collider>();
+        Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hitInfo;
+        if (boardCollider.Raycast(mouseRay, out hitInfo, 1000f)) {
+            return hitInfo.point;
+        }
+        return null;
+    }
 }
