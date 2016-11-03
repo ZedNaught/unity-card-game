@@ -9,13 +9,22 @@ public class SpellCard : Card {
         target.Damage(damage);
     }
 
-    public virtual void Play() {
+    public virtual bool Play() {
+        if (!OwnerCanPlay()) {
+            return false;
+        }
         IDamageable target = opponent.hero;
         target.Damage(damage);
+        owner.hero.TappedMana += manaCost;
+        return true;
     }
 
     public virtual bool RequiresTarget() {
         return false;
+    }
+
+    public virtual bool OwnerCanPlay() {
+        return (owner.hero.AvailableMana >= manaCost);
     }
 
     private void Start() {

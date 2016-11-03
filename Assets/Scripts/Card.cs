@@ -29,6 +29,7 @@ public abstract class Card : MonoBehaviour {
 
     public Card GetHighlightCopy() {
         Card copy = ((GameObject)Instantiate(gameObject)).GetComponent<Card>();
+        copy.name = "Highlighted Card";
         copy.GetComponent<Collider>().enabled = false;
         return copy;
     }

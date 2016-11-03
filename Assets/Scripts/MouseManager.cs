@@ -3,7 +3,7 @@ using System.Collections;
 
 public class MouseManager : MonoBehaviour {
 //    public GameObject board;
-    public static MouseManager Instance;
+    public static MouseManager Instance { get; set; }
 
     private float lerpSpeed = 0.3f;
     private int piecesLayer;
@@ -51,18 +51,20 @@ public class MouseManager : MonoBehaviour {
         }
 
         else {
-            if (Input.GetMouseButtonUp(0)) {
+            if (mouseOverDropZone) {
+                Board.Instance.dropZoneMeshRenderer.material.color = Color.white;
+            }
+            else {
+                Board.Instance.dropZoneMeshRenderer.material.color = Board.Instance.boardMeshRenderer.material.color;
+            }
+
+            if (!Input.GetMouseButton(0)) {
                 if (mouseOverDropZone) {
                     PlayDraggedCard();
                 }
                 else {
                     StopDrag();
                 }
-            }
-            if (mouseOverDropZone) {
-                Board.Instance.dropZoneMeshRenderer.material.color = Color.white;
-            }
-            else {
                 Board.Instance.dropZoneMeshRenderer.material.color = Board.Instance.boardMeshRenderer.material.color;
             }
         }
@@ -82,10 +84,15 @@ public class MouseManager : MonoBehaviour {
         if (draggedCard is SpellCard) {
             SpellCard spellCard = draggedCard as SpellCard;
             if (!spellCard.RequiresTarget()) {    
-                spellCard.Play();
-                Destroy(draggedCard.gameObject);
-                draggedCard = null;
-                draggedCardHandIndex = -1;
+                if (spellCard.Play()) {
+                    Destroy(draggedCard.gameObject);
+                    draggedCard = null;
+                    draggedCardHandIndex = -1;
+                }
+                else {
+                    StopDrag();
+                    return;
+                }
             }
             else {
                 Debug.Log("need to implement playing spell card with target");  // TODO //

@@ -51,6 +51,7 @@ public class CardHand : MonoBehaviour {
             return;
         }
         highlightedCardCopy = card.GetHighlightCopy();
+        highlightedCardCopy.transform.SetParent(transform);
         card.canvas.enabled = false;
         highlightedCardCopy.transform.rotation = Quaternion.identity;
         highlightedCardCopy.transform.position = new Vector3(card.transform.position.x, card.transform.position.y, transform.position.z + 3f);
