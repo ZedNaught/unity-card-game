@@ -3,11 +3,13 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 
 public class UIManager : MonoBehaviour {
-    public RectTransform player1ManaPanel, player2ManaPanel;
+    public RectTransform player1Mana, player2Mana;
     public GameObject availableManaPrefab, tappedManaPrefab;
     public static UIManager Instance { get; set; }
 
-    private Stack<RectTransform> player1Crystals, player2Crystals;
+    private Stack<RectTransform> player1Crystals; //, player2Crystals;
+    private RectTransform player1ManaPanel; //, player2ManaPanel;
+    private Text player1ManaCountText, player2ManaCountText;
 
     private void Awake() {
         if (Instance == null) {
@@ -17,8 +19,12 @@ public class UIManager : MonoBehaviour {
             Destroy(gameObject);
             return;
         }
+        player1ManaPanel = (RectTransform)(player1Mana.Find("Crystal Panel").transform);
+//        player2ManaPanel = (RectTransform)(player2Mana.Find("Crystal Panel").transform);
         player1Crystals = new Stack<RectTransform>();
-        player2Crystals = new Stack<RectTransform>();
+//        player2Crystals = new Stack<RectTransform>();
+        player1ManaCountText = player1Mana.GetComponentInChildren<Text>();
+        player2ManaCountText = player2Mana.GetComponentInChildren<Text>();
     }
 
     private void Start() {
@@ -26,9 +32,9 @@ public class UIManager : MonoBehaviour {
     }
 
     public void RefreshManaPanels() {
-        RectTransform[] panels = { player1ManaPanel, player2ManaPanel };
-        Player[] players = { GameManager.Instance.player1, GameManager.Instance.player2 };
-        Stack<RectTransform>[] crystalStacks = { player1Crystals, player2Crystals };
+        RectTransform[] panels = { player1ManaPanel }; //, player2ManaPanel };
+        Player[] players = { GameManager.Instance.player1 }; // , GameManager.Instance.player2 };
+        Stack<RectTransform>[] crystalStacks = { player1Crystals }; //, player2Crystals };
 
         for (int i = 0; i < panels.Length; i++) {
             RectTransform panel = panels[i];
@@ -55,5 +61,8 @@ public class UIManager : MonoBehaviour {
                 crystalStack.Push((RectTransform)manaCrystal.transform);
             }
         }
+
+        player1ManaCountText.text = string.Format("{0}/{1}", GameManager.Instance.player1.hero.AvailableMana, GameManager.Instance.player1.hero.Mana);
+        player2ManaCountText.text = string.Format("{0}/{1}", GameManager.Instance.player2.hero.AvailableMana, GameManager.Instance.player2.hero.Mana);
     }
 }

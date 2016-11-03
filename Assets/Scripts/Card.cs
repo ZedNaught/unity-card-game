@@ -9,7 +9,7 @@ public abstract class Card : MonoBehaviour {
     public Canvas canvas;
     public Player owner, opponent;
 
-    public static float highlightScaleFactor = 1.8f;
+    public static float mouseoverScaleFactor = 1.8f;
 
     private void Awake() {
         canvas = GetComponentInChildren<Canvas>();
@@ -27,9 +27,9 @@ public abstract class Card : MonoBehaviour {
         nameText.text = cardName;
     }
 
-    public Card GetHighlightCopy() {
+    public Card GetMouseoverCopy() {
         Card copy = ((GameObject)Instantiate(gameObject)).GetComponent<Card>();
-        copy.name = "Highlighted Card";
+        copy.name = "Moused-over Card";
         copy.GetComponent<Collider>().enabled = false;
         return copy;
     }

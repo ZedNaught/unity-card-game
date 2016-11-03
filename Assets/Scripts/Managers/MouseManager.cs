@@ -9,6 +9,8 @@ public class MouseManager : MonoBehaviour {
     private int piecesLayer;
     private Card draggedCard;
     private int draggedCardHandIndex;
+    private GameObject pieceUnderMouse;
+    private IDamageable targetUnderMouse;
 
     private void Awake() {
         if (Instance == null) {
@@ -22,6 +24,13 @@ public class MouseManager : MonoBehaviour {
     }
 
     private void Update() {
+        GetPieceUnderMouse();
+//        if (pieceUnderMouse != null) {
+//            IDamageable target = pieceUnderMouse.GetComponent<IDamageable>();
+//            if (target != null) {
+//                Debug.Log("target " + target);
+//            }
+//        }
         HandleInput();
         DragCard();
     }
@@ -29,24 +38,23 @@ public class MouseManager : MonoBehaviour {
     private void HandleInput() {
         bool mouseOverDropZone = MouseOverDropZone();
 
-        if (!draggedCard) {
-            GameObject piece = GetPieceUnderMouse();
-            if (piece) {
-                Card card = piece.GetComponent<Card>();
-                if (card) {
+        if (draggedCard == null) {
+            if (pieceUnderMouse != null) {
+                Card card = pieceUnderMouse.GetComponent<Card>();
+                if (card != null) {
                     if (Input.GetMouseButtonDown(0)) {
                         StartDrag(card);
                     }
                     else {
-                        CardHand.Instance.HighlightCard(card);
+                        CardHand.Instance.MouseoverCard(card);
                     }
                 }
                 else {
-                    CardHand.Instance.HighlightCard(null);
+                    CardHand.Instance.MouseoverCard(null);
                 }
             }
             else {
-                CardHand.Instance.HighlightCard(null);
+                CardHand.Instance.MouseoverCard(null);
             }
         }
 
@@ -59,7 +67,7 @@ public class MouseManager : MonoBehaviour {
             }
 
             if (!Input.GetMouseButton(0)) {
-                if (mouseOverDropZone) {
+                if (mouseOverDropZone || targetUnderMouse != null) {
                     PlayDraggedCard();
                 }
                 else {
@@ -71,7 +79,7 @@ public class MouseManager : MonoBehaviour {
     }
 
     private void DragCard() {
-        if (draggedCard) {
+        if (draggedCard != null) {
             Vector3? possiblePointOnBoard = GetBoardPointUnderMouse();
             if (possiblePointOnBoard.HasValue) {
                 Vector3 pointOnBoard = (Vector3)possiblePointOnBoard;
@@ -83,7 +91,17 @@ public class MouseManager : MonoBehaviour {
     private void PlayDraggedCard() {
         if (draggedCard is SpellCard) {
             SpellCard spellCard = draggedCard as SpellCard;
-            if (!spellCard.RequiresTarget()) {    
+            if (spellCard.CanUseTarget() && pieceUnderMouse != null && targetUnderMouse != null) {
+                if (spellCard.Play(targetUnderMouse)) {
+                    Destroy(draggedCard.gameObject);
+                    draggedCard = null;
+                    draggedCardHandIndex = -1;
+                }
+                else {
+                    StopDrag();
+                }
+            }
+            else if (!spellCard.RequiresTarget()) {    
                 if (spellCard.Play()) {
                     Destroy(draggedCard.gameObject);
                     draggedCard = null;
@@ -91,11 +109,10 @@ public class MouseManager : MonoBehaviour {
                 }
                 else {
                     StopDrag();
-                    return;
                 }
             }
             else {
-                Debug.Log("need to implement playing spell card with target");  // TODO //
+                StopDrag();
             }
         }
     }
@@ -105,12 +122,14 @@ public class MouseManager : MonoBehaviour {
         card.hand.PopCard(card, out cardHandIndex);
         draggedCard = card;
         draggedCardHandIndex = cardHandIndex;
-        card.transform.localScale = Card.highlightScaleFactor * Vector3.one;
+        card.transform.localScale = Card.mouseoverScaleFactor * Vector3.one;
         card.transform.rotation = Quaternion.identity;
+        draggedCard.GetComponent<Collider>().enabled = false;
     }
 
     private void StopDrag() {
-        if (draggedCard) {
+        if (draggedCard != null) {
+            draggedCard.GetComponent<Collider>().enabled = true;
             CardHand.Instance.AddCard(draggedCard, draggedCardHandIndex);
         }
 
@@ -118,20 +137,22 @@ public class MouseManager : MonoBehaviour {
         draggedCardHandIndex = -1; 
     }
 
-    private GameObject GetPieceUnderMouse() {
+    private void GetPieceUnderMouse() {
+        pieceUnderMouse = null;
+        targetUnderMouse = null;
+
         Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit[] hits;
         hits = Physics.RaycastAll(mouseRay, 1000f, 1 << piecesLayer);
         if (hits.Length > 0) {
-            GameObject pieceUnderMouse = hits[0].collider.gameObject;
+            pieceUnderMouse = hits[0].collider.gameObject;
             foreach (RaycastHit hit in hits) {
                 if (hit.collider.GetComponentInChildren<Canvas>().sortingOrder > pieceUnderMouse.GetComponentInChildren<Canvas>().sortingOrder) {
                     pieceUnderMouse = hit.collider.gameObject;
                 }
             }
-            return pieceUnderMouse;
+            targetUnderMouse = pieceUnderMouse.GetComponent<IDamageable>();
         }
-        return null;
     }
 
     public Vector3? GetBoardPointUnderMouse() {

@@ -56,9 +56,9 @@ public class Hero : MonoBehaviour, IDamageable {
 
     private void IncreaseAndRefreshMana() {
         if (Mana < maxMana) {
-            Mana += 3;
+            Mana += 1;
         }
-        TappedMana = 1;
+        TappedMana = 0;
     }
 
     private void DrawCard() {

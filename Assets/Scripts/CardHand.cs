@@ -9,8 +9,8 @@ public class CardHand : MonoBehaviour {
 //    public static int maxHandSize = 10;
 
     [SerializeField] private List<Card> cards;
-    private Card highlightedCard;
-    private Card highlightedCardCopy;
+    private Card mouseoverCard;
+    private Card mouseoverCardCopy;
 
 
     public void AddCard(Card card) {
@@ -29,7 +29,7 @@ public class CardHand : MonoBehaviour {
                 index = i;
                 cards.RemoveAt(i);
                 card.canvas.sortingOrder = cards.Count;
-                HighlightCard(null);
+                MouseoverCard(null);
                 card.hand = null;
                 return card;
             }
@@ -38,25 +38,25 @@ public class CardHand : MonoBehaviour {
         return null;
     }
 
-    public void HighlightCard(Card card) {
-        if (card == highlightedCard) {
+    public void MouseoverCard(Card card) {
+        if (card == mouseoverCard) {
             return;
         }
-        if (highlightedCard) {
-            highlightedCard.canvas.enabled = true;
-            Destroy(highlightedCardCopy.gameObject);
+        if (mouseoverCard) {
+            mouseoverCard.canvas.enabled = true;
+            Destroy(mouseoverCardCopy.gameObject);
         }
-        highlightedCard = card;
+        mouseoverCard = card;
         if (!card) {
             return;
         }
-        highlightedCardCopy = card.GetHighlightCopy();
-        highlightedCardCopy.transform.SetParent(transform);
+        mouseoverCardCopy = card.GetMouseoverCopy();
+        mouseoverCardCopy.transform.SetParent(transform);
         card.canvas.enabled = false;
-        highlightedCardCopy.transform.rotation = Quaternion.identity;
-        highlightedCardCopy.transform.position = new Vector3(card.transform.position.x, card.transform.position.y, transform.position.z + 3f);
-        highlightedCardCopy.transform.localScale = Card.highlightScaleFactor * Vector3.one;
-        highlightedCardCopy.canvas.sortingOrder = cards.Count;
+        mouseoverCardCopy.transform.rotation = Quaternion.identity;
+        mouseoverCardCopy.transform.position = new Vector3(card.transform.position.x, card.transform.position.y, transform.position.z + 3f);
+        mouseoverCardCopy.transform.localScale = Card.mouseoverScaleFactor * Vector3.one;
+        mouseoverCardCopy.canvas.sortingOrder = cards.Count;
     }
 
     private void Awake() {
