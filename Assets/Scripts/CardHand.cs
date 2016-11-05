@@ -54,7 +54,7 @@ public class CardHand : MonoBehaviour {
         mouseoverCardCopy.transform.SetParent(transform);
         card.canvas.enabled = false;
         mouseoverCardCopy.transform.rotation = Quaternion.identity;
-        mouseoverCardCopy.transform.position = new Vector3(card.transform.position.x, card.transform.position.y, transform.position.z + 3f);
+        mouseoverCardCopy.transform.position = new Vector3(card.transform.position.x, card.transform.position.y, transform.position.z + 4f);
         mouseoverCardCopy.transform.localScale = Card.mouseoverScaleFactor * Vector3.one;
         mouseoverCardCopy.canvas.sortingOrder = cards.Count;
     }

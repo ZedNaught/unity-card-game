@@ -10,7 +10,7 @@ public class MouseManager : MonoBehaviour {
     private Card draggedCard;
     private int draggedCardHandIndex;
     private GameObject pieceUnderMouse;
-    private IDamageable targetUnderMouse;
+    private ITargetable targetUnderMouse;
 
     private void Awake() {
         if (Instance == null) {
@@ -33,6 +33,7 @@ public class MouseManager : MonoBehaviour {
 //        }
         HandleInput();
         DragCard();
+        MouseOverCastZone();
     }
 
     private void HandleInput() {
@@ -66,7 +67,7 @@ public class MouseManager : MonoBehaviour {
                 Board.Instance.dropZoneMeshRenderer.material.color = Board.Instance.boardMeshRenderer.material.color;
             }
 
-            if (!Input.GetMouseButton(0)) {
+            if (DragCancelled()) {
                 if (mouseOverDropZone || targetUnderMouse != null) {
                     PlayDraggedCard();
                 }
@@ -76,6 +77,10 @@ public class MouseManager : MonoBehaviour {
                 Board.Instance.dropZoneMeshRenderer.material.color = Board.Instance.boardMeshRenderer.material.color;
             }
         }
+    }
+
+    private bool DragCancelled() {
+        return (!Input.GetMouseButton(0) || Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(1));
     }
 
     private void DragCard() {
@@ -122,7 +127,7 @@ public class MouseManager : MonoBehaviour {
         card.hand.PopCard(card, out cardHandIndex);
         draggedCard = card;
         draggedCardHandIndex = cardHandIndex;
-        card.transform.localScale = Card.mouseoverScaleFactor * Vector3.one;
+//        card.transform.localScale = Card.mouseoverScaleFactor * Vector3.one;
         card.transform.rotation = Quaternion.identity;
         draggedCard.GetComponent<Collider>().enabled = false;
     }
@@ -151,7 +156,10 @@ public class MouseManager : MonoBehaviour {
                     pieceUnderMouse = hit.collider.gameObject;
                 }
             }
-            targetUnderMouse = pieceUnderMouse.GetComponent<IDamageable>();
+            targetUnderMouse = pieceUnderMouse.GetComponent<ITargetable>();
+            if (targetUnderMouse != null) {
+                targetUnderMouse.Highlight(Color.white);
+            }
         }
     }
 
@@ -168,5 +176,15 @@ public class MouseManager : MonoBehaviour {
         Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitInfo;
         return Board.Instance.dropZoneCollider.Raycast(mouseRay, out hitInfo, 1000f);
+    }
+
+    public bool MouseOverCastZone() {
+        float mouseYRelative = Input.mousePosition.y / Screen.height;
+        bool mouseOverCastZone = (mouseYRelative >= 0.33f && mouseYRelative < 1f);
+        if (draggedCard != null) {
+            draggedCard.SetVisible(!mouseOverCastZone);
+        }
+        Debug.Log(mouseOverCastZone);
+        return mouseOverCastZone;
     }
 }

@@ -5,7 +5,7 @@ public class SpellCard : Card {
     public int damage;
 //    public Hero target;  // TODO // remove
 
-    public virtual bool Play(IDamageable target) {
+    public virtual bool Play(ITargetable target) {
         if (!OwnerCanPlay()) {
             return false;
         }
@@ -33,11 +33,7 @@ public class SpellCard : Card {
         return true;
     }
 
-    public virtual bool OwnerCanPlay() {
-        return (owner.hero.AvailableMana >= manaCost);
-    }
-
     private void Start() {
-        cardText = string.Format("Deal {0} damage to enemy Hero.", damage);
+        cardText = string.Format("Deal {0} damage.", damage);
     }
 }

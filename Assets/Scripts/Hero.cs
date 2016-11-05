@@ -2,9 +2,13 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class Hero : MonoBehaviour, IDamageable {
+public class Hero : MonoBehaviour, ITargetable {
     public string heroName;
     public int maxHealth, health, maxMana;
+
+    private bool highlighted = false;
+    [SerializeField] private Image highlightImage;
+
     public int Mana {
         get {
             return _mana;
@@ -37,12 +41,22 @@ public class Hero : MonoBehaviour, IDamageable {
         health -= amount;
     }
 
+    public void Highlight(Color? color = null) {
+        highlighted = true;
+        highlightImage.color = color ?? Color.green;
+    }
+
     private void Start() {
         health = maxHealth;
     }
 
     private void Update() {
         UpdateHeroText();
+    }
+
+    private void LateUpdate() {
+        highlightImage.gameObject.SetActive(highlighted);
+        highlighted = false;
     }
 
     private void UpdateHeroText() {

@@ -3,7 +3,8 @@ using System.Collections;
 
 public class GameManager : MonoBehaviour {
     public static GameManager Instance { get; set; }
-    public Player player1, player2, currentPlayer;
+    public Player player1, player2;
+    public Player CurrentPlayer { get; private set; }
 
     private void Awake() {
         if (Instance == null) {
@@ -20,13 +21,13 @@ public class GameManager : MonoBehaviour {
     }
 
     private void StartTurn() {
-        if (currentPlayer == null || currentPlayer == player2 ) {
-            currentPlayer = player1;
+        if (CurrentPlayer == null || CurrentPlayer == player2 ) {
+            CurrentPlayer = player1;
         }
         else {
-            currentPlayer = player2;
+            CurrentPlayer = player2;
         }
 
-        currentPlayer.hero.StartTurn();
+        CurrentPlayer.hero.StartTurn();
     }
 }
