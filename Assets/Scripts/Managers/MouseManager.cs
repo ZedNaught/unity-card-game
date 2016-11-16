@@ -39,7 +39,6 @@ public class MouseManager : MonoBehaviour {
     }
 
     private void HandleInput() {
-
         if (draggedCard == null) {
             if (pieceUnderMouse != null) {
                 Card card = pieceUnderMouse.GetComponent<Card>();
@@ -68,7 +67,7 @@ public class MouseManager : MonoBehaviour {
 //                Board.Instance.dropZoneMeshRenderer.material.color = Board.Instance.boardMeshRenderer.material.color;
 //            }
 
-            if (draggedCard is SpellCard && ((SpellCard)draggedCard).CanUseTarget()) {
+            if (draggedCard.IsSpellCard() && ((SpellEffect)(draggedCard.CardEffect)).CanUseTarget()) {
 //                LineRenderer lr = draggedCard.gameObject.AddComponent<LineRenderer>();
 //                Debug.Log("targeting spell cast");
 //                Debug.DrawLine(CardHand.Instance.transform.position, boardPlanePointUnderMouse, Color.magenta);
@@ -86,6 +85,10 @@ public class MouseManager : MonoBehaviour {
                 else {
                     StopDrag();
                 }
+            }
+
+            if (mouseOverCastZone && !draggedCard.OwnerCanPlay()) {
+                StopDrag();
             }
 //            Board.Instance.dropZoneMeshRenderer.material.color = Board.Instance.boardMeshRenderer.material.color;
         }
@@ -106,18 +109,18 @@ public class MouseManager : MonoBehaviour {
     }
 
     private void PlayDraggedCard() {
-        if (draggedCard is SpellCard) {
-            SpellCard spellCard = draggedCard as SpellCard;
-            if (spellCard.CanUseTarget() && pieceUnderMouse != null && targetUnderMouse != null) {
-                if (spellCard.Play(targetUnderMouse)) {
+        if (draggedCard.IsSpellCard()) {
+            SpellEffect spellEffect = (SpellEffect)(draggedCard.CardEffect);
+            if (spellEffect.CanUseTarget() && pieceUnderMouse != null && targetUnderMouse != null) {
+                if (spellEffect.Play(targetUnderMouse)) {
                     DiscardDraggedCard();
                 }
 //                else {
 //                    StopDrag();
 //                }
             }
-            else if (!spellCard.RequiresTarget()) {    
-                if (spellCard.Play()) {
+            else if (!spellEffect.RequiresTarget()) {    
+                if (spellEffect.Play()) {
                     DiscardDraggedCard();
                 }
 //                else {

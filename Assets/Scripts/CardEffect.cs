@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[RequireComponent(typeof(Card))]
 public abstract class CardEffect : MonoBehaviour {
-    public abstract bool Play(ITargetable target=null);
 }

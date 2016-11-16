@@ -15,7 +15,7 @@ public class SpellEffect : CardEffect {
     }
     private Card _card;
 
-    public virtual bool Play(ITargetable target) {
+    public virtual bool Play(ITargetable target=null) {
         if (!Card.OwnerCanPlay()) {
             return false;
         }
@@ -24,16 +24,16 @@ public class SpellEffect : CardEffect {
         return true;
     }
 
-    public virtual bool Play() {
-        return false;
-//        if (!OwnerCanPlay()) {
-//            return false;
-//        }
-//        IDamageable target = opponent.hero;
-//        target.Damage(damage);
-//        owner.hero.TappedMana += manaCost;
-//        return true;
-    }
+//    public virtual bool Play() {
+//        return false;
+////        if (!OwnerCanPlay()) {
+////            return false;
+////        }
+////        IDamageable target = opponent.hero;
+////        target.Damage(damage);
+////        owner.hero.TappedMana += manaCost;
+////        return true;
+//    }
 
     public virtual bool RequiresTarget() {
         return true;

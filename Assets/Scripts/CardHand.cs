@@ -80,14 +80,19 @@ public class CardHand : MonoBehaviour {
     }
 
     private void Start() {
+        temp_BootstrapCardHand();
+//        UpdateCardPositions();
+    }
+
+    private void temp_BootstrapCardHand() {
         for (int i = 0; i < handSize; i++) {
             Card card = ((GameObject)Instantiate(cardPrefab, transform)).GetComponent<Card>();
             card.manaCost = i;
-            ((SpellCard) card).damage = i + 1;
+            SpellEffect effect = card.GetComponent<SpellEffect>();
+            effect.damage = i + 1;
             card.CardName = (i + 1) + " Damage";
             AddCard(card);
         }
-//        UpdateCardPositions();
     }
 
     private void Update() {

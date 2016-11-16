@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(CardEffect))]
 public class Card : MonoBehaviour, IHighlightable {
     public string CardName {
         get {
@@ -19,11 +18,7 @@ public class Card : MonoBehaviour, IHighlightable {
     public Canvas canvas;
     public Player owner, opponent;
     public static float mouseoverScaleFactor = 1.8f;
-
-    [SerializeField] private Image highlightImage;
-    private bool highlighted;
-    [SerializeField] private string _cardName;
-    private CardEffect CardEffect {
+    public CardEffect CardEffect {
         get {
             if (_cardEffect == null) {
                 _cardEffect = GetComponent<CardEffect>();
@@ -31,6 +26,10 @@ public class Card : MonoBehaviour, IHighlightable {
             return _cardEffect;
         }
     }
+
+    [SerializeField] private Image highlightImage;
+    private bool highlighted;
+    [SerializeField] private string _cardName;
     private CardEffect _cardEffect;
 
     public void Highlight(Color? color = null) {
@@ -54,9 +53,13 @@ public class Card : MonoBehaviour, IHighlightable {
         canvas.enabled = isVisible;
     }
 
-    public bool Play(ITargetable target=null) {
-        return CardEffect.Play(target);
+    public bool IsSpellCard() {
+        return CardEffect is SpellEffect;
     }
+
+//    public bool Play(ITargetable target=null) {
+//        return CardEffect.Play(target);
+//    }
 
     private void Awake() {
         canvas = GetComponentInChildren<Canvas>();
