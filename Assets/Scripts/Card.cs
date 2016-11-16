@@ -1,17 +1,37 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public abstract class Card : MonoBehaviour, IHighlightable {
-    public string cardName, cardText;
+[RequireComponent(typeof(CardEffect))]
+public class Card : MonoBehaviour, IHighlightable {
+    public string CardName {
+        get {
+            return _cardName;
+        }
+        set {
+            _cardName = value;
+            gameObject.name = "(Card) " + _cardName;
+        }
+    }
+    public string cardText;
     public int manaCost;
     public Text manaText, descriptionText, nameText;
     public CardHand hand;
     public Canvas canvas;
     public Player owner, opponent;
-
     public static float mouseoverScaleFactor = 1.8f;
+
     [SerializeField] private Image highlightImage;
     private bool highlighted;
+    [SerializeField] private string _cardName;
+    private CardEffect CardEffect {
+        get {
+            if (_cardEffect == null) {
+                _cardEffect = GetComponent<CardEffect>();
+            }
+            return _cardEffect;
+        }
+    }
+    private CardEffect _cardEffect;
 
     public void Highlight(Color? color = null) {
         highlighted = true;
@@ -34,6 +54,10 @@ public abstract class Card : MonoBehaviour, IHighlightable {
         canvas.enabled = isVisible;
     }
 
+    public bool Play(ITargetable target=null) {
+        return CardEffect.Play(target);
+    }
+
     private void Awake() {
         canvas = GetComponentInChildren<Canvas>();
         owner = GameManager.Instance.player1;
@@ -54,6 +78,6 @@ public abstract class Card : MonoBehaviour, IHighlightable {
     protected void UpdateCardText() {
         manaText.text = manaCost.ToString();
         descriptionText.text = cardText;
-        nameText.text = cardName;
+        nameText.text = CardName;
     }
 }

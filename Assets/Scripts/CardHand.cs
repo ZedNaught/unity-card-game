@@ -11,6 +11,7 @@ public class CardHand : MonoBehaviour {
     [SerializeField] private List<Card> cards;
     private Card mouseoverCard;
     private Card mouseoverCardCopy;
+    [SerializeField] private LineRenderer lineRenderer;
 
 
     public void AddCard(Card card) {
@@ -59,6 +60,14 @@ public class CardHand : MonoBehaviour {
         mouseoverCardCopy.canvas.sortingOrder = cards.Count;
     }
 
+    public void SetLineTarget(Vector3 position) {
+        lineRenderer.SetPosition(1, position + Vector3.up);
+    }
+
+    public void SetLineVisible(bool visible) {
+        lineRenderer.enabled = visible;
+    }
+
     private void Awake() {
         if (Instance == null) {
             Instance = this;
@@ -67,14 +76,15 @@ public class CardHand : MonoBehaviour {
             Destroy(gameObject);
             return;
         }
+        lineRenderer.SetPosition(0, transform.position + Vector3.up);
     }
 
     private void Start() {
         for (int i = 0; i < handSize; i++) {
             Card card = ((GameObject)Instantiate(cardPrefab, transform)).GetComponent<Card>();
             card.manaCost = i;
-            card.cardName = "Card " + i;
             ((SpellCard) card).damage = i + 1;
+            card.CardName = (i + 1) + " Damage";
             AddCard(card);
         }
 //        UpdateCardPositions();

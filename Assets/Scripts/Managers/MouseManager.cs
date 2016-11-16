@@ -11,6 +11,8 @@ public class MouseManager : MonoBehaviour {
     private int draggedCardHandIndex;
     private GameObject pieceUnderMouse;
     private ITargetable targetUnderMouse;
+    private bool mouseOverCastZone;
+    private Vector3 boardPlanePointUnderMouse;
 
     private void Awake() {
         if (Instance == null) {
@@ -24,7 +26,7 @@ public class MouseManager : MonoBehaviour {
     }
 
     private void Update() {
-        GetPieceUnderMouse();
+        SetMouseContext();
 //        if (pieceUnderMouse != null) {
 //            IDamageable target = pieceUnderMouse.GetComponent<IDamageable>();
 //            if (target != null) {
@@ -33,11 +35,10 @@ public class MouseManager : MonoBehaviour {
 //        }
         HandleInput();
         DragCard();
-        MouseOverCastZone();
+//        MouseOverCastZone();
     }
 
     private void HandleInput() {
-        bool mouseOverDropZone = MouseOverDropZone();
 
         if (draggedCard == null) {
             if (pieceUnderMouse != null) {
@@ -60,36 +61,47 @@ public class MouseManager : MonoBehaviour {
         }
 
         else {
-            if (mouseOverDropZone) {
-                Board.Instance.dropZoneMeshRenderer.material.color = Color.white;
-            }
-            else {
-                Board.Instance.dropZoneMeshRenderer.material.color = Board.Instance.boardMeshRenderer.material.color;
+//            if (mouseOverDropZone) {
+//                Board.Instance.dropZoneMeshRenderer.material.color = Color.white;
+//            }
+//            else {
+//                Board.Instance.dropZoneMeshRenderer.material.color = Board.Instance.boardMeshRenderer.material.color;
+//            }
+
+            if (draggedCard is SpellCard && ((SpellCard)draggedCard).CanUseTarget()) {
+//                LineRenderer lr = draggedCard.gameObject.AddComponent<LineRenderer>();
+//                Debug.Log("targeting spell cast");
+//                Debug.DrawLine(CardHand.Instance.transform.position, boardPlanePointUnderMouse, Color.magenta);
+                CardHand.Instance.SetLineTarget(boardPlanePointUnderMouse);
+                draggedCard.SetVisible(!mouseOverCastZone);
             }
 
             if (DragCancelled()) {
-                if (mouseOverDropZone || targetUnderMouse != null) {
+                StopDrag();
+            }
+            else if (DragCompleted()) {
+                if (mouseOverCastZone || targetUnderMouse != null) {
                     PlayDraggedCard();
                 }
                 else {
                     StopDrag();
                 }
-                Board.Instance.dropZoneMeshRenderer.material.color = Board.Instance.boardMeshRenderer.material.color;
             }
+//            Board.Instance.dropZoneMeshRenderer.material.color = Board.Instance.boardMeshRenderer.material.color;
         }
     }
 
     private bool DragCancelled() {
-        return (!Input.GetMouseButton(0) || Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(1));
+        return (Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(1));
+    }
+
+    private bool DragCompleted() {
+        return !Input.GetMouseButton(0) ;  
     }
 
     private void DragCard() {
         if (draggedCard != null) {
-            Vector3? possiblePointOnBoard = GetBoardPointUnderMouse();
-            if (possiblePointOnBoard.HasValue) {
-                Vector3 pointOnBoard = (Vector3)possiblePointOnBoard;
-                draggedCard.transform.position = Vector3.Lerp(draggedCard.transform.position, pointOnBoard, lerpSpeed);
-            }
+            draggedCard.transform.position = Vector3.Lerp(draggedCard.transform.position, boardPlanePointUnderMouse, lerpSpeed);
         }
     }
 
@@ -98,28 +110,25 @@ public class MouseManager : MonoBehaviour {
             SpellCard spellCard = draggedCard as SpellCard;
             if (spellCard.CanUseTarget() && pieceUnderMouse != null && targetUnderMouse != null) {
                 if (spellCard.Play(targetUnderMouse)) {
-                    Destroy(draggedCard.gameObject);
-                    draggedCard = null;
-                    draggedCardHandIndex = -1;
+                    DiscardDraggedCard();
                 }
-                else {
-                    StopDrag();
-                }
+//                else {
+//                    StopDrag();
+//                }
             }
             else if (!spellCard.RequiresTarget()) {    
                 if (spellCard.Play()) {
-                    Destroy(draggedCard.gameObject);
-                    draggedCard = null;
-                    draggedCardHandIndex = -1;
+                    DiscardDraggedCard();
                 }
-                else {
-                    StopDrag();
-                }
+//                else {
+//                    StopDrag();
+//                }
             }
-            else {
-                StopDrag();
-            }
+//            else {
+//                StopDrag();
+//            }
         }
+        StopDrag();
     }
 
     private void StartDrag(Card card) {
@@ -130,19 +139,27 @@ public class MouseManager : MonoBehaviour {
 //        card.transform.localScale = Card.mouseoverScaleFactor * Vector3.one;
         card.transform.rotation = Quaternion.identity;
         draggedCard.GetComponent<Collider>().enabled = false;
+        CardHand.Instance.SetLineVisible(true);
     }
 
     private void StopDrag() {
         if (draggedCard != null) {
             draggedCard.GetComponent<Collider>().enabled = true;
             CardHand.Instance.AddCard(draggedCard, draggedCardHandIndex);
+            draggedCard.SetVisible(true);
+            draggedCard = null;
         }
-
-        draggedCard = null;
-        draggedCardHandIndex = -1; 
+        draggedCardHandIndex = -1;
+        CardHand.Instance.SetLineVisible(false);
     }
 
-    private void GetPieceUnderMouse() {
+    private void DiscardDraggedCard() {
+        Destroy(draggedCard.gameObject);
+        draggedCard = null;
+        draggedCardHandIndex = -1;
+    }
+
+    private void CheckPieceUnderMouse() {
         pieceUnderMouse = null;
         targetUnderMouse = null;
 
@@ -163,28 +180,27 @@ public class MouseManager : MonoBehaviour {
         }
     }
 
-    public Vector3? GetBoardPointUnderMouse() {
+    private void CheckBoardPointUnderMouse() {
         Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitInfo;
-        if (Board.Instance.boardCollider.Raycast(mouseRay, out hitInfo, 1000f)) {
-            return hitInfo.point;
-        }
-        return null;
+        Board.Instance.boardCollider.Raycast(mouseRay, out hitInfo, 1000f);
+        boardPlanePointUnderMouse = hitInfo.point;
     }
 
-    public bool MouseOverDropZone() {
+    private bool MouseOverDropZone() {
         Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitInfo;
         return Board.Instance.dropZoneCollider.Raycast(mouseRay, out hitInfo, 1000f);
     }
 
-    public bool MouseOverCastZone() {
+    private void CheckMouseOverCastZone() {
         float mouseYRelative = Input.mousePosition.y / Screen.height;
-        bool mouseOverCastZone = (mouseYRelative >= 0.33f && mouseYRelative < 1f);
-        if (draggedCard != null) {
-            draggedCard.SetVisible(!mouseOverCastZone);
-        }
-        Debug.Log(mouseOverCastZone);
-        return mouseOverCastZone;
+        mouseOverCastZone = (mouseYRelative >= 0.33f);
+    }
+
+    private void SetMouseContext() {
+        CheckMouseOverCastZone();
+        CheckPieceUnderMouse();
+        CheckBoardPointUnderMouse();
     }
 }
