@@ -139,8 +139,9 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 4000010000871958}
-  - 114: {fileID: 114000010018621552}
   - 65: {fileID: 65000010244879856}
+  - 114: {fileID: 114000011283118148}
+  - 114: {fileID: 114000013741540864}
   m_Layer: 8
   m_Name: Spell Card
   m_TagString: Card
@@ -191,29 +192,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 4.8, y: 0.01, z: 6.9}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &114000010018621552
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000013163179836}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0ef13fae569644f4b9ebf481ddc07d8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cardName: Card Name
-  cardText: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-  manaCost: 1
-  manaText: {fileID: 114000013585425502}
-  descriptionText: {fileID: 114000011938074974}
-  nameText: {fileID: 114000014274856166}
-  hand: {fileID: 0}
-  canvas: {fileID: 0}
-  owner: {fileID: 0}
-  opponent: {fileID: 0}
-  highlightImage: {fileID: 114000011766208590}
-  damage: 1
 --- !u!114 &114000010335795588
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -284,6 +262,28 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114000011283118148
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013163179836}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22210eb2a9415443fbebbd8e1b061c96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardText: 
+  manaCost: 0
+  manaText: {fileID: 114000013585425502}
+  descriptionText: {fileID: 114000011938074974}
+  nameText: {fileID: 114000014274856166}
+  hand: {fileID: 0}
+  canvas: {fileID: 0}
+  owner: {fileID: 0}
+  opponent: {fileID: 0}
+  highlightImage: {fileID: 114000011766208590}
+  _cardName: 
 --- !u!114 &114000011766208590
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -398,6 +398,18 @@ MonoBehaviour:
     m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 0
+--- !u!114 &114000013741540864
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013163179836}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceadb58becbf24bf8812cb30baa5625b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 0
 --- !u!114 &114000013818674428
 MonoBehaviour:
   m_ObjectHideFlags: 1

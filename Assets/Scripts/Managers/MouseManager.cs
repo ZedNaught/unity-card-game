@@ -86,8 +86,7 @@ public class MouseManager : MonoBehaviour {
                     StopDrag();
                 }
             }
-
-            if (mouseOverCastZone && !draggedCard.OwnerCanPlay()) {
+            else if (mouseOverCastZone && !draggedCard.OwnerCanPlay()) {
                 StopDrag();
             }
 //            Board.Instance.dropZoneMeshRenderer.material.color = Board.Instance.boardMeshRenderer.material.color;

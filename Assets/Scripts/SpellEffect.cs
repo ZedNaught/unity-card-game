@@ -5,16 +5,6 @@ public class SpellEffect : CardEffect {
     public int damage;
 //    public Hero target;  // TODO // remove
 
-    private Card Card {
-        get {
-            if (_card == null) {
-                _card = GetComponent<Card>();
-            }
-            return _card;
-        }
-    }
-    private Card _card;
-
     public virtual bool Play(ITargetable target=null) {
         if (!Card.OwnerCanPlay()) {
             return false;

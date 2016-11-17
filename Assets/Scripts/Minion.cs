@@ -10,14 +10,29 @@ public class Minion : MonoBehaviour, ITargetable {
         }
         private set {
             _health = value;
+            if (_health <= 0) {
+                Die();
+            }
         }
     }
+    public float Width {
+        get {
+            return canvas.pixelRect.width;
+        }
+    }
+    public float Height {
+        get {
+            return canvas.pixelRect.height;
+        }
+    }
+    public MinionBoard minionBoard;
 
     private int _health;
     private bool highlighted = false;
     [SerializeField] private Image highlightImage;
     [SerializeField] private Text healthText;
     [SerializeField] private Text attackText;
+    private Canvas canvas;
 
     public void Damage(int amount) {
         Health -= amount;
@@ -30,6 +45,7 @@ public class Minion : MonoBehaviour, ITargetable {
 
     private void Awake() {
         Health = maxHealth;
+        canvas = GetComponentInChildren<Canvas>();
     }
 
     private void Update() {
@@ -41,8 +57,19 @@ public class Minion : MonoBehaviour, ITargetable {
         highlighted = false;
     }
 
+    private void OnDestroy() {
+        if (minionBoard != null) {
+            minionBoard.RemoveMinion(this);
+            minionBoard = null;
+        }
+    }
+
     private void UpdateText() {
         healthText.text = Health.ToString();
         attackText.text = attack.ToString();
+    }
+
+    private void Die() {
+        Destroy(gameObject);
     }
 }

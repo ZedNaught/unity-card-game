@@ -141,9 +141,8 @@ GameObject:
   - 4: {fileID: 4000010000871958}
   - 65: {fileID: 65000010244879856}
   - 114: {fileID: 114000011283118148}
-  - 114: {fileID: 114000013741540864}
   m_Layer: 8
-  m_Name: Spell Card New
+  m_Name: Minion Card
   m_TagString: Card
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -398,18 +397,6 @@ MonoBehaviour:
     m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 0
---- !u!114 &114000013741540864
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000013163179836}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceadb58becbf24bf8812cb30baa5625b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 0
 --- !u!114 &114000013818674428
 MonoBehaviour:
   m_ObjectHideFlags: 1

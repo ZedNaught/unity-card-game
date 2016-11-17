@@ -76,6 +76,7 @@ public class Hero : MonoBehaviour, ITargetable {
     }
 
     private void DrawCard() {
-        // TODO //
+        // TODO // add card drawing
+        Debug.Log("TODO: add card drawing");
     }
 }
