@@ -6,6 +6,7 @@ public class CardHand : MonoBehaviour {
     public float cardSpacing, cardTilt, cardHeightAdj, handArcAmplitude, handArcFrequency;
     public int handSize;
     public static CardHand Instance { get; set; }
+    public Player player;
 //    public static int maxHandSize = 10;
 
     [SerializeField] private List<Card> cards;

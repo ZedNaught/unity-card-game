@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class Hero : MonoBehaviour, ITargetable {
     public string heroName;
     public int maxHealth, health, maxMana;
+    public Player player;
 
     private bool highlighted = false;
     [SerializeField] private Image highlightImage;
@@ -76,7 +77,7 @@ public class Hero : MonoBehaviour, ITargetable {
     }
 
     private void DrawCard() {
-        // TODO // add card drawing
-        Debug.Log("TODO: add card drawing");
+        Card drawnCard = player.deck.DrawCard();
+        player.hand.AddCard(drawnCard);
     }
 }

@@ -250,6 +250,7 @@ MonoBehaviour:
   maxHealth: 30
   health: 0
   maxMana: 10
+  player: {fileID: 0}
   highlightImage: {fileID: 0}
   healthText: {fileID: 1693915745}
 --- !u!65 &216039420
@@ -505,6 +506,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hero: {fileID: 216039419}
   hand: {fileID: 0}
+  deck: {fileID: 0}
 --- !u!1001 &394674373
 Prefab:
   m_ObjectHideFlags: 0
@@ -667,6 +669,7 @@ MonoBehaviour:
   handArcAmplitude: 5.29
   handArcFrequency: 2
   handSize: 10
+  player: {fileID: 0}
   cards: []
   lineRenderer: {fileID: 491365266}
 --- !u!120 &491365266
@@ -846,23 +849,49 @@ RectTransform:
   m_PrefabParentObject: {fileID: 224000012270735688, guid: e148047d49b234fbe8fcde1b83c10094,
     type: 2}
   m_PrefabInternal: {fileID: 2063411703}
---- !u!1 &928770683 stripped
+--- !u!1 &843136454
 GameObject:
-  m_PrefabParentObject: {fileID: 1000013163179836, guid: 88e98e1ced0d64b68bc72208c7485844,
-    type: 2}
-  m_PrefabInternal: {fileID: 1387970776}
---- !u!114 &928770684
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 843136455}
+  - 114: {fileID: 843136456}
+  m_Layer: 0
+  m_Name: Deck
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &843136455
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 843136454}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 1681326547}
+  m_RootOrder: 3
+--- !u!114 &843136456
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 928770683}
+  m_GameObject: {fileID: 843136454}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 845b5cdf967d54623a7594b5c541f00a, type: 3}
+  m_Script: {fileID: 11500000, guid: 6b0925cd7db8a48f4a42f2d789db40f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _minion: {fileID: 114000014050941372, guid: 109821e19b62b49f3ab1756757e9d7db, type: 2}
+  player: {fileID: 0}
+  cardList:
+  - {fileID: 0}
 --- !u!1001 &984693555
 Prefab:
   m_ObjectHideFlags: 0
@@ -1213,6 +1242,7 @@ MonoBehaviour:
   handArcAmplitude: 5.29
   handArcFrequency: 2
   handSize: 10
+  player: {fileID: 0}
   cards: []
   lineRenderer: {fileID: 0}
 --- !u!1001 &1387970776
@@ -1222,44 +1252,44 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 4000010000871958, guid: 88e98e1ced0d64b68bc72208c7485844, type: 2}
+    - target: {fileID: 4000012057433612, guid: 8133469cb79da4235bc490ed2991275b, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4000010000871958, guid: 88e98e1ced0d64b68bc72208c7485844, type: 2}
+    - target: {fileID: 4000012057433612, guid: 8133469cb79da4235bc490ed2991275b, type: 2}
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4000010000871958, guid: 88e98e1ced0d64b68bc72208c7485844, type: 2}
+    - target: {fileID: 4000012057433612, guid: 8133469cb79da4235bc490ed2991275b, type: 2}
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4000010000871958, guid: 88e98e1ced0d64b68bc72208c7485844, type: 2}
+    - target: {fileID: 4000012057433612, guid: 8133469cb79da4235bc490ed2991275b, type: 2}
       propertyPath: m_LocalRotation.x
       value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: 4000010000871958, guid: 88e98e1ced0d64b68bc72208c7485844, type: 2}
+    - target: {fileID: 4000012057433612, guid: 8133469cb79da4235bc490ed2991275b, type: 2}
       propertyPath: m_LocalRotation.y
       value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: 4000010000871958, guid: 88e98e1ced0d64b68bc72208c7485844, type: 2}
+    - target: {fileID: 4000012057433612, guid: 8133469cb79da4235bc490ed2991275b, type: 2}
       propertyPath: m_LocalRotation.z
       value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: 4000010000871958, guid: 88e98e1ced0d64b68bc72208c7485844, type: 2}
+    - target: {fileID: 4000012057433612, guid: 8133469cb79da4235bc490ed2991275b, type: 2}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 4000010000871958, guid: 88e98e1ced0d64b68bc72208c7485844, type: 2}
+    - target: {fileID: 4000012057433612, guid: 8133469cb79da4235bc490ed2991275b, type: 2}
       propertyPath: m_RootOrder
       value: 7
       objectReference: {fileID: 0}
-    - target: {fileID: 1000013163179836, guid: 88e98e1ced0d64b68bc72208c7485844, type: 2}
-      propertyPath: m_IsActive
-      value: 0
+    - target: {fileID: 1000011306289036, guid: 8133469cb79da4235bc490ed2991275b, type: 2}
+      propertyPath: m_Name
+      value: Minion Card
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: 88e98e1ced0d64b68bc72208c7485844, type: 2}
+  m_ParentPrefab: {fileID: 100100000, guid: 8133469cb79da4235bc490ed2991275b, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &1418919209
 GameObject:
@@ -1447,6 +1477,7 @@ Transform:
   - {fileID: 491365264}
   - {fileID: 1091110769}
   - {fileID: 1933016346}
+  - {fileID: 843136455}
   m_Father: {fileID: 310183145}
   m_RootOrder: 0
 --- !u!114 &1681326548
@@ -1462,6 +1493,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hero: {fileID: 1091110770}
   hand: {fileID: 491365265}
+  deck: {fileID: 843136456}
 --- !u!1 &1693915743
 GameObject:
   m_ObjectHideFlags: 0
